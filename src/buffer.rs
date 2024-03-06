@@ -11,7 +11,7 @@ impl<'a, T: Copy> InplaceBuffer<'a, T> {
 }
 
 impl<'a, T: Copy> IoBuffer<T> for InplaceBuffer<'a, T> {
-    fn iter<'r, 's>(&'s mut self) -> InplaceIter<'r, T>
+    fn iter<'r, 's>(&'s mut self) -> impl Iterator<Item = (T, &'r mut T)>
     where
         T: 'r,
         's: 'r,
@@ -32,7 +32,7 @@ impl<'a, 'b, T: Copy> OutOfPlaceBuffer<'a, 'b, T> {
 }
 
 impl<'a, 'b, T: Copy> IoBuffer<T> for OutOfPlaceBuffer<'a, 'b, T> {
-    fn iter<'r, 's>(&'s mut self) -> OutOfPlaceIter<'r, 'r, T>
+    fn iter<'r, 's>(&'s mut self) -> impl Iterator<Item = (T, &'r mut T)>
     where
         T: 'r,
         's: 'r,
@@ -41,7 +41,7 @@ impl<'a, 'b, T: Copy> IoBuffer<T> for OutOfPlaceBuffer<'a, 'b, T> {
     }
 }
 
-trait IoBuffer<T> {
+pub trait IoBuffer<T> {
     fn iter<'a, 's>(&'s mut self) -> impl Iterator<Item = (T, &'a mut T)>
     where
         T: 'a,
